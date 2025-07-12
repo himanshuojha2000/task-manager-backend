@@ -10,9 +10,20 @@ const taskRoutes = require("./routes/taskRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://himanshutaskmanager.netlify.app",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed for this origin"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
